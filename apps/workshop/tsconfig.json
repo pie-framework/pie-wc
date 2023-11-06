@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "references": [
+    {
+      "path": "../../elements/shared"
+    },
+    {
+      "path": "../../elements/multiple-choice-question"
+    },
+    {
+      "path": "../../elements/multiple-choice-controller"
+    },
+    {
+      "path": "../../elements/question-player"
+    }
+  ],
+  "include": [
+    "./src/**/*.ts", "./src/**/*.json"
+  ],
+  "exclude": [
+    "node_modules",
+    "tests"
+  ]
+}

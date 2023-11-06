@@ -1,0 +1,102 @@
+{
+  "id": "cc036ed6-3022-4496-8fb5-e7e3cdfa2af7@0.0.1",
+  "baseId": "cc036ed6-3022-4496-8fb5-e7e3cdfa2af7",
+  "name": "Some Multiple Choice Item",
+  "config": {
+    "models": [
+      {
+        "promptEnabled": true,
+        "gridColumns": "2",
+        "scoringType": "auto",
+        "choicesLayout": "vertical",
+        "limitChoicesNumber": true,
+        "teacherInstructionsEnabled": false,
+        "toolbarEditorPosition": "bottom",
+        "choiceMode": "checkbox",
+        "studentInstructionsEnabled": false,
+        "lockChoiceOrder": false,
+        "partialScoring": true,
+        "rationaleEnabled": false,
+        "id": "p-00000000",
+        "choicePrefix": "letters",
+        "choices": [
+          {
+            "feedback": {
+              "type": "none",
+              "value": ""
+            },
+            "correct": false,
+            "label": "<div>The football player</div>",
+            "value": "0"
+          },
+          {
+            "feedback": {
+              "type": "none",
+              "value": ""
+            },
+            "correct": true,
+            "label": "<div>The blocking sled</div>",
+            "value": "1"
+          },
+          {
+            "feedback": {
+              "type": "none",
+              "value": ""
+            },
+            "correct": true,
+            "label": "<div>The Earth</div>",
+            "value": "2"
+          },
+          {
+            "feedback": {
+              "type": "none",
+              "value": ""
+            },
+            "correct": false,
+            "label": "<div>The field</div>",
+            "value": "3"
+          },
+          {
+            "feedback": {
+              "type": "none",
+              "value": ""
+            },
+            "label": "<div>The air</div>",
+            "value": "4"
+          }
+        ],
+        "feedbackEnabled": false,
+        "prompt": "<div>The interaction between what two objects results in the downward force?</div>",
+        "errors": {},
+        "element": "pp-pie-element-multiple-choice"
+      }
+    ],
+    "markup": "<pp-pie-element-multiple-choice id=\"p-00000000\"></pp-pie-element-multiple-choice>",
+    "elements": {
+      "pp-pie-element-multiple-choice": "@pie-element/multiple-choice@latest"
+    },
+    "id": "p-00000000"
+  },
+  "version": {
+    "patch": 1,
+    "major": 0,
+    "minor": 0,
+    "prerelease": {
+      "tag": null,
+      "version": null
+    }
+  },
+  "searchMetaData": {
+    "pies": [
+      "@pie-element/multiple-choice"
+    ],
+    "collections_id": [
+      "1"
+    ],
+    "bundle_@pie-element/multiple-choice": "latest",
+    "baseId": "cc036ed6-3022-4496-8fb5-e7e3cdfa2af7",
+    "isRelease": true
+  },
+  "retired": false,
+  "published": true
+}

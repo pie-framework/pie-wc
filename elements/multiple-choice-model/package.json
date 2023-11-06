@@ -1,0 +1,25 @@
+{
+  "name": "@pie-wc/multiple-choice-model",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "default": "./src/index.ts",
+  "exports": {
+    "bun": "./src/index.ts",
+    "import": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "bundle": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@pie-wc/shared": "workspace:*",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^4.4.11",
+    "@types/lodash": "^4.14.199"
+  }
+}

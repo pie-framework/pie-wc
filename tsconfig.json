@@ -1,0 +1,35 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "elements/multiple-choice-controller"
+    },
+    {
+      "path": "elements/multiple-choice-model"
+    },
+    {
+      "path": "elements/multiple-choice-question"
+    },
+    {
+      "path": "elements/question-player"
+    },
+    {
+      "path": "elements/shared"
+    },
+    {
+      "path": "apps/workshop"
+    }
+  ],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@pie-wc/*": [
+        "elements/*/src",
+        "apps/*/src",
+        "packages/*/src"
+      ]
+    }
+  }
+}

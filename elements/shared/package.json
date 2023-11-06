@@ -1,0 +1,32 @@
+{
+  "name": "@pie-wc/shared",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    "bun": "./src/index.ts",
+    "default": "./src/index.ts",
+    "import": "./dist/index.js",
+    "require": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "vite",
+    "bundle": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lit": "latest",
+    "@lit/task": "latest",
+    "@lit/context": "latest",
+    "@material/web": "latest",
+    "lodash": "^4.17.21",
+    "semver": "^7.5.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^4.4.11",
+    "@types/lodash": "^4.14.199",
+    "@types/semver": "^7.5.4"
+  }
+}

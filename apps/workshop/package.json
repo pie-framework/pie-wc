@@ -1,0 +1,34 @@
+{
+  "name": "workshop",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "lit": "^3.0.0",
+    "@pie-wc/shared": "workspace:*",
+    "@pie-wc/multiple-choice-question": "workspace:*",
+    "@pie-wc/multiple-choice-controller": "workspace:*",
+    "@pie-wc/question-player": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2",
+    "vite": "^4.4.11",
+    "serve": "^14.2.1",
+    "storybook": "^7.5.2",
+    "@storybook/web-components-vite": "^7.5.2",
+    "@storybook/web-components": "^7.5.2",
+    "@storybook/testing-library": "^0.2.2",
+    "@storybook/addon-actions": "^7.5.2",
+    "@storybook/addon-docs": "^7.5.2",
+    "@storybook/addon-essentials": "^7.5.2",
+    "@storybook/addon-links": "^7.5.2",
+    "@storybook/addon-a11y": "^7.5.2"
+  }
+}
