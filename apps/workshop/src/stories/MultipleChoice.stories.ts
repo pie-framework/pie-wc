@@ -5,8 +5,6 @@ import '@pie-wc/multiple-choice-question';
 import item from './data/item-cc036ed6-3022-4496-8fb5-e7e3cdfa2af7.json';
 import {Env} from "@pie-wc/shared";
 
-const model = item.config.models[0];
-
 type MultipleChoiceArgs = {
     mode?: 'gather' | 'view' | 'evaluate';
     role?: 'instructor' | 'student';
@@ -33,19 +31,19 @@ const meta: Meta<MultipleChoiceArgs> = {
         choiceMode: {
             options: ['checkbox', 'radio'],
             control: {type: 'select'},
-            defaultValue: model.choiceMode || 'checkbox',
+            defaultValue: item.config.models[0].choiceMode || 'checkbox',
             description: 'Indicates the choices are single or multiple selection'
         },
         choicePrefix: {
             options: ['letters', 'numbers'],
             control: {type: 'select'},
-            defaultValue: model.choicePrefix || 'letters',
+            defaultValue: item.config.models[0].choicePrefix || 'letters',
             description: 'What key should be displayed before choices. If undefined no  key will be displayed.'
         },
         promptEnabled: {
             control: {type: 'boolean'},
             description: 'Should prompt be displayed?',
-            defaultValue: model.promptEnabled || true
+            defaultValue: item.config.models[0].promptEnabled || true
         }
     },
 };
@@ -53,30 +51,26 @@ export default meta;
 
 type Story = StoryObj;
 
-const StoryWrapper = (args: MultipleChoiceArgs) => {
-    const modifiedModel = {...model, ...args};
-    const modifiedItem = {...item, config: {...item.config, models: [modifiedModel]}};
-    const env = {mode: args.mode, role: args.role} as Env;
-    return html`
-        <pie-container .env=${env}>
-            <pie-item-container .item=${modifiedItem}>
-                <pie-multiple-choice>
-                </pie-multiple-choice>
-                <br/>
-                <pie-auto-score-container>
-                    <pie-auto-score-display>
-                    </pie-auto-score-display>
-                </pie-auto-score-container>
-            </pie-item-container>
-        </pie-container>
-    `;
-};
-
-export const Primary: Story = {
+export const PlainWithScoringPanel: Story = {
     args: {
         mode: 'gather',
         role: 'student',
     },
-    render: StoryWrapper
+    render: (args: MultipleChoiceArgs) => {
+        const env = {mode: args.mode, role: args.role} as Env;
+        return html`
+            <pie-container .env=${env}>
+                <pie-item-container .item=${item}>
+                    <pie-multiple-choice>
+                    </pie-multiple-choice>
+                    <br/>
+                    <pie-auto-score-container>
+                        <pie-auto-score-display>
+                        </pie-auto-score-display>
+                    </pie-auto-score-container>
+                </pie-item-container>
+            </pie-container>
+        `;
+    }
 };
 

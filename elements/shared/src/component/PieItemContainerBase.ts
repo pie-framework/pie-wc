@@ -1,8 +1,8 @@
 import {LitElement} from "lit";
 import {property} from "lit/decorators.js";
-import {provide} from "@lit/context";
-import type {PieItem, PieItemSession} from "../model/index.js";
-import {createItemSession, pieItemContext, pieItemSessionContext,} from "../model/index.js";
+import {consume, provide} from "@lit/context";
+import type {Env, PieItem, PieItemSession} from "../model/index.js";
+import {createItemSession, pieEnvContext, pieItemContext, pieItemSessionContext,} from "../model/index.js";
 import {OutcomeResult} from "../controller/index.js";
 import type {PieElementsLoaderFn} from "./PieElementsLoader.js";
 import {localPieElementsLoader} from "./PieElementsLocalLoader.js";
@@ -13,10 +13,17 @@ import {deepArrayEquals} from "@lit/task/deep-equals.js";
 
 export class PieItemContainerBase extends LitElement {
 
+    @consume({context: pieEnvContext, subscribe: true})
+    @provide({context: pieEnvContext})
+    @property({type: Object})
+    env: Env;
+
+    @consume({context: pieItemContext, subscribe: true})
     @provide({context: pieItemContext})
     @property({type: Object})
     item: PieItem;
 
+    @consume({context: pieItemSessionContext, subscribe: true})
     @provide({context: pieItemSessionContext})
     @property({type: Object})
     itemSession: PieItemSession
@@ -30,6 +37,7 @@ export class PieItemContainerBase extends LitElement {
     @property({type: Object})
     scoreSessionFn: ScoreSessionFn;
 
+    @consume({context: pieElementsMetaContext, subscribe: true})
     @provide({context: pieElementsMetaContext})
     @property()
     pieElementsMeta: PieElementsMeta;

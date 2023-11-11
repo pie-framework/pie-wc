@@ -30,18 +30,39 @@ export default meta;
 
 type Story = StoryObj;
 
-const StoryWrapper = (args: PieItemPlayerArgs) => {
-    const env = {mode: args.mode, role: args.role} as Env;
-    return html`
-        <pie-item-player .env=${env}
-                         .item=${item}>
-        </pie-item-player>`;
-};
-
-export const Primary: Story = {
+export const Plain: Story = {
     args: {
         mode: 'gather',
         role: 'student',
     },
-    render: StoryWrapper
+    render: (args: PieItemPlayerArgs) => {
+
+        const env = {mode: args.mode, role: args.role} as Env;
+        return html`
+            <pie-item-player .env=${env}
+                             .item=${item}>
+            </pie-item-player>`;
+    }
+};
+
+export const Embedded: Story = {
+    args: {
+        mode: 'gather',
+        role: 'student',
+    },
+    render: (args: PieItemPlayerArgs) => {
+        const env = {mode: args.mode, role: args.role} as Env;
+        return html`
+            <pie-container .env=${env}>
+                <pie-item-container .item=${item}>
+                    <pie-item-player>
+                    </pie-item-player>
+                    <br/>
+                    <pie-auto-score-container>
+                        <pie-auto-score-display>
+                        </pie-auto-score-display>
+                    </pie-auto-score-container>
+                </pie-item-container>
+            </pie-container>`;
+    }
 };
