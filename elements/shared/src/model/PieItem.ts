@@ -1,6 +1,5 @@
 import {SemVer} from "./Version.js";
 import {createContext} from "@lit/context";
-import {PieToControllerFns} from "../controller/index.js";
 
 export interface BaseEntity {
     id?: string;
@@ -69,15 +68,24 @@ export class PieElementMapping {
     pie: string;
 
     /**
-     * What the element should be mapped to, e.g. pp-pie-element-multiple-choice. This is needed because these
-     * elements are used in the item's markup. It can be read from the config node 'elements', which is a map
-     * between elements as they are used in the markup and the pie element they refer to, for instance:
+     * What the element should be mapped to according to the item info, e.g. pp-pie-element-multiple-choice. This
+     * is needed because these elements are used in the item's markup. It can be read from the config node
+     * 'elements', which is a map between elements as they are used in the markup and the pie element they
+     * refer to, for instance:
      *
      *     "elements": {
      *       "pp-pie-element-multiple-choice": "@pie-element/multiple-choice@latest"
      *     }
      */
-    targetElement: string;
+    pieTagName: string;
+
+    /**
+     * The actual element name that the pie element is mapped to. This is the name that is used in the markup that
+     * will be merged into the host. We need this to iron out the wrinkles associated with otherwise having mapped
+     * the same component to multiple HTML elements. It is regrettable that PIE provides the option to map to
+     * arbitrary HTML elements; this is a workaround for that. The loader is responsible for setting this.
+     */
+    tagName: string;
 
     /**
      * The parsed pie package name, path and version.
@@ -91,7 +99,7 @@ export class PieElementMapping {
      */
     constructor(pie: string, targetElement: string) {
         this.pie = pie;
-        this.targetElement = targetElement;
+        this.pieTagName = targetElement;
         this.piePackage = parsePackageName(pie);
     }
 }
@@ -123,7 +131,5 @@ export const parsePackageName = (
 export const pieItemContext = createContext<PieItem>("pie-ctx-item");
 
 export const piePassageContext = createContext<PiePassage>("pie-ctx-passage");
-
-export const pieToControllerFnsContext = createContext<PieToControllerFns>("pie-ctx-controller-fns");
 
 export const pieModelContext = createContext<PieModel>("pie-ctx-model");

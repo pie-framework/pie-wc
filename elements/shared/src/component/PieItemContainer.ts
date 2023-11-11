@@ -1,22 +1,23 @@
 import {html, LitElement} from "lit";
-import {customElement, property, state} from "lit/decorators.js";
+import {customElement, property} from "lit/decorators.js";
 import {provide} from "@lit/context";
 import {
     createItemSession,
-    PieElementMapping,
     pieItemContext,
     pieItemSessionContext,
-    pieToControllerFnsContext
 } from "../model/index.js";
 import type {PieItem, PieItemSession} from "../model/index.js";
 import {OutcomeResult} from "../controller/index.js";
-import type {PieToControllerFns} from "../controller/index.js";
 import type {PieElementsLoaderFn} from "./PieElementsLoader.js";
 import {localPieElementsLoader} from "./PieElementsLocalLoader.js";
+import type {PieElementsMeta} from "./shared.js";
+import {pieElementsMetaContext} from "./shared.js";
+import {Task} from "@lit/task";
+import {deepArrayEquals} from "@lit/task/deep-equals.js";
 
 /**
  * Container component to set up the context for the item and item session and load the elements and
- * controllers for the item.
+ * controllers for the item. It will postpone rendering children until the elements and controllers are available.
  */
 @customElement('pie-item-container')
 export class PieItemContainer extends LitElement {
@@ -38,43 +39,40 @@ export class PieItemContainer extends LitElement {
     @property({type: Object})
     scoreSessionFn: ScoreSessionFn;
 
-    /**
-     holds map of controller functions for each pie element, and also serves as an indicator
-     whether elements are loaded in the first place
-     */
-    @provide({context: pieToControllerFnsContext})
-    @state()
-    pieToControllerFns: PieToControllerFns;
+    @provide({context: pieElementsMetaContext})
+    @property()
+    pieElementsMeta: PieElementsMeta;
+
+    loadPieElementsTask = new Task(this, {
+        task: async ([item], {signal}) => {
+            if (!item) {
+                console.debug("no item available");
+                return;
+            }
+            const meta = await this.pieLoader(item);
+            this.pieElementsMeta = meta;
+            this.itemSession = this.itemSession || createItemSession(item);
+            return meta;
+        },
+        args: () => [this.item],
+        autoRun: true,
+        argsEqual: deepArrayEquals,
+    });
 
     render() {
         return html`
-            <slot></slot>`;
+            ${this.loadPieElementsTask.render({
+                initial: () => html`<p>waiting to load PIE elements</p>`,
+                pending: () => html`<p>loading PIE elements...</p>`,
+                complete: (value) => html`
+                    <slot></slot>`,
+                error: (error) => html`<p>unable to load PIE elements: ${error}</p>`,
+            })}`;
     }
 
-    loadPieElements() {
-        this.pieToControllerFns = null;
-        loadPies(this.item, this.pieLoader)
-            .then((fns) => {
-                this.pieToControllerFns = fns;
-                console.debug('elements and controller functions loaded: %O', this.pieToControllerFns);
-                this.itemSession = createItemSession(this.item);
-                console.debug('item session created: %O', this.itemSession);
-                this.requestUpdate();
-            })
-            .catch((error) => {
-                console.error('error loading custom elements and/ or controller functions:', error);
-            });
-    }
-
-    firstUpdated() {
-        this.loadPieElements();
-    }
-
-
-    handleSessionChange(evt) {
+    handleSessionChange(evt: any) {
         const s = JSON.parse(evt.detail);
-        // we need to do this to trigger a change in the session that Lit can then react to
-        console.debug('session changed: %O', s);
+        console.debug('session changed: %O (was: %O)', s, this.itemSession);
         this.itemSession = s;
     }
 
@@ -101,25 +99,6 @@ export interface SessionUpdatedFn {
  */
 export interface ScoreSessionFn {
     (session: PieItemSession): Promise<OutcomeResult[]>
-}
-
-/**
- * Load the elements and controllers for the elements in the item.
- * @param item the item to load the elements for
- * @param loader the loader function that will load the elements and controllers
- */
-export const loadPies = async (item: PieItem, loader: PieElementsLoaderFn): Promise<PieToControllerFns> => {
-    if (!item) {
-        throw new Error("Item is required");
-    }
-    if (!item.config?.elements || Object.values(item.config.elements).length === 0) {
-        throw new Error("Item has no elements");
-    }
-    if (!loader) {
-        throw new Error("Loader is required");
-    }
-    return loader(Object.entries(item.config.elements)
-        .map(([element, pie]) => new PieElementMapping(pie, element)));
 }
 
 declare global {

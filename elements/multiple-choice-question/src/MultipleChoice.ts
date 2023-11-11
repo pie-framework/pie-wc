@@ -1,36 +1,38 @@
 import {css, html, nothing} from 'lit'
-import {customElement, property} from 'lit/decorators.js'
+import {customElement, state} from 'lit/decorators.js'
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import '@material/web/list/list.js';
 import {PieElement} from "@pie-wc/shared";
-import {MultipleChoicePie, MultipleChoicePieSession} from "@pie-wc/multiple-choice-model";
+import type {MultipleChoicePie, MultipleChoicePieSession} from "@pie-wc/multiple-choice-model";
 import './MultipleChoiceItem.js';
 
 @customElement('pie-multiple-choice')
 export class MultipleChoice extends PieElement<MultipleChoicePie, MultipleChoicePieSession> {
 
-    render() {
-        if (!this.model) return html`
+
+    renderElement(model: MultipleChoicePie) {
+        if (!model) return html`
             <div>no model set</div>`;
 
-        const groupRole = this.model.choiceMode === 'radio' ? 'radiogroup' : 'group';
-        const groupId = `group-${this.model.id}`;
-        this.ariaLabel = this.model.choiceMode === 'radio' ? 'Multiple Choice Question' : 'Multiple Correct Answer Question';
+        const groupRole = model.choiceMode === 'radio' ? 'radiogroup' : 'group';
+        const groupId = `group-${model.id}`;
+        this.ariaLabel = model.choiceMode === 'radio' ? 'Multiple Choice Question' : 'Multiple Correct Answer Question';
 
         return html`
             <div role="group"
                  aria-labelledby="question-prompt">
                 <div id="question-prompt" class="prompt" role="heading">
-                    ${this.model.promptEnabled ? unsafeHTML(this.model.prompt) : nothing}
+                    ${model.promptEnabled ? unsafeHTML(model.prompt) : nothing}
                 </div>
                 <div role="${groupRole}" aria-labelledby="${groupId}">
                     <md-list @choice-change=${this.handleChoiceChange}>
-                        ${(this.model.choices || []).map((choice, index) => html`
-                        <pie-multiple-choice-item
-                                .choice=${choice}
-                                .index=${index}
-                                role="${this.model.choiceMode === 'radio' ? 'radio' : 'checkbox'}">
-                        </pie-multiple-choice-item>`
+                        ${(model.choices || []).map((choice, index) => html`
+                            <pie-multiple-choice-item
+                                    .choice=${choice}
+                                    .index=${index}
+                                    .checked=${this.isChecked(choice.value)}
+                                    role="${model.choiceMode === 'radio' ? 'radio' : 'checkbox'}">
+                            </pie-multiple-choice-item>`
                         )}
                     </md-list>
                 </div>
@@ -38,23 +40,32 @@ export class MultipleChoice extends PieElement<MultipleChoicePie, MultipleChoice
         `;
     }
 
-    private handleChoiceChange(event: CustomEvent) {
+    isChecked(choiceId: string) {
+        const session = this.session;
+        if (!session || !session.value) {
+            return false;
+        }
+        return session.value.includes(choiceId);
+    }
+
+    handleChoiceChange(event: CustomEvent) {
         console.debug('[multiple-choice] handleChoiceChange: %s', JSON.stringify(event.detail));
         const {id, checked} = event.detail;
-        if (!this.session) {
+        const session = this.session;
+        if (!session) {
             throw new Error('session not set');
         }
-        if (!this.session.value) {
-            this.session.value = [];
+        if (!session.value) {
+            session.value = [];
         }
         if (checked) {
             // add the choice ID to session.values
-            this.session.value.push(id);
+            session.value.push(id);
         } else {
             // remove the choice ID from session.values
-            this.session.value = this.session.value.filter(value => value !== id);
+            session.value = session.value.filter(value => value !== id);
         }
-        this.signalSessionChanged();
+        this.updateElementSession(session);
     }
 
     static styles = css`

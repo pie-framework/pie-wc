@@ -55,3 +55,10 @@ pnpn build
 cd apps/workshop
 pnpm storybook
 ```
+
+## TODO
+
+* Check out https://justinfagnani.com/2019/11/01/how-to-publish-web-components-to-npm/ for tips on publishing 
+    (and possibly other resources).
+* Figure out how to include existing (React based) PIE elements (this project is not a go until we have an answer 
+    for that). There's some wip in Lit that might help with this, see https://github.com/lit/lit/issues/2353

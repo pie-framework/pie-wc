@@ -25,7 +25,7 @@ export class MultipleChoiceItem extends LitElement {
     env: Env;
 
     // @ts-ignore
-    @consume({context: pieModelContext,  subscribe: true})
+    @consume({context: pieModelContext, subscribe: true})
     @property({type: Object})
     model: MultipleChoicePie;
 
@@ -79,7 +79,7 @@ export class MultipleChoiceItem extends LitElement {
         return html`
             <md-list-item role="option">
                 <div class="choice-row">
-                    ${this.env?.mode === 'evaluate' ? this.getMarker() : nothing}
+                    ${(this.env?.mode === 'evaluate' && this.env?.role === 'instructor') ? this.getMarker() : nothing}
                     ${this.renderOption()}
                     ${this.renderLabel()}
                 </div>
@@ -89,9 +89,8 @@ export class MultipleChoiceItem extends LitElement {
     }
 
     private renderLabel() {
-        const controlId = `choice-${this.index}`;
         return html`
-            <label for="${controlId}">
+            <label for="${this.choice.value}">
                 <span class="choice-label">
                     <div>${choicePrefix(this.model, this.index)}.&nbsp</div>${unsafeHTML(this.choice.label)}
                 </span>
@@ -100,22 +99,19 @@ export class MultipleChoiceItem extends LitElement {
 
     private renderOption() {
         const isDisabled = this.env?.mode === 'view';
-        const controlId = `choice-${this.index}`;
         if (this.model.choiceMode === 'radio') {
             return html`
-                <md-radio id="${controlId}"
+                <md-radio id="${this.choice.value}"
                           @change=${this.handleInputChange}
                           ?disabled=${isDisabled}
                           ?checked=${this.checked}
-                          aria-labelledby="${controlId}-label"
                           touch-target="wrapper"></md-radio>`;
         } else {
             return html`
-                <md-checkbox id="${controlId}"
+                <md-checkbox id="${this.choice.value}"
                              @change=${this.handleInputChange}
                              ?disabled=${isDisabled}
                              ?checked=${this.checked}
-                             aria-labelledby="${controlId}-label"
                              touch-target="wrapper"></md-checkbox>`;
         }
     }

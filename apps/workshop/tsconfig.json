@@ -14,9 +14,6 @@
     },
     {
       "path": "../../elements/multiple-choice-controller"
-    },
-    {
-      "path": "../../elements/question-player"
     }
   ],
   "include": [

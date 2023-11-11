@@ -87,13 +87,6 @@
     }
   },
   "searchMetaData": {
-    "pies": [
-      "@pie-element/multiple-choice"
-    ],
-    "collections_id": [
-      "1"
-    ],
-    "bundle_@pie-element/multiple-choice": "latest",
     "baseId": "cc036ed6-3022-4496-8fb5-e7e3cdfa2af7",
     "isRelease": true
   },

@@ -1,5 +1,6 @@
 import {ConfigEntity, Env, ModeType, PieItem, PieItemSession, ScoreType, SessionAutoScore} from "../model/index.js";
-import {OutcomeResult, PieToControllerFns} from "./ElementController.js";
+import {OutcomeResult} from "./ElementController.js";
+import {PieElementsMeta} from "../component/index.js";
 
 /**
  * Returns true if partial scoring is disabled for all models in the config.
@@ -67,10 +68,11 @@ export const formatAutoScore = (raw: OutcomeResult[], env: Env): SessionAutoScor
     };
 }
 
-export const autoScoreSession = async (session: PieItemSession,
+export const autoScoreSession = async (host: HTMLElement,
+                                       session: PieItemSession,
                                        item: PieItem,
                                        environment: Env,
-                                       fns: PieToControllerFns): Promise<SessionAutoScore> => {
+                                       pieMeta: PieElementsMeta): Promise<SessionAutoScore> => {
 
     if (!session) {
         console.debug('session is required');
@@ -84,11 +86,11 @@ export const autoScoreSession = async (session: PieItemSession,
         console.debug('environment is required');
         return null;
     }
-    if (!fns) {
+    if (!pieMeta) {
         console.debug('fns is required');
         return null;
     }
-    console.debug('auto-scoring session: %O, item: %O, env: %O, fns: %O', session, item, environment, fns);
+    console.debug('auto-scoring session: %O, item: %O, env: %O, meta: %O', session, item, environment, pieMeta);
     const env = {...environment};
     env.mode = ModeType.EVALUATE; // force mode to evaluate, since some elements won't return an outcome;
     const isScoringDisabled = isPartialScoringDisabled(item.config);
@@ -98,15 +100,15 @@ export const autoScoreSession = async (session: PieItemSession,
     }
 
     const outcomes = await Promise.all(session.elementSessions.map((elementSession) => {
-        const outcomeFn = fns.findForPie(elementSession.pie)?.outcome;
-        if (!outcomeFn) {
+        const fns = pieMeta.loaded.find((meta) => meta.elementMapping.pieTagName === elementSession.element)?.controllerFns;
+        if (!fns?.outcome) {
             throw new Error(`no outcome function found for pie ${elementSession.pie}`);
         }
-        const model = item.config.models.find((m) => m.id === elementSession.modelId);
+        const model = item.config.models.find((m) => m.element === elementSession.element);
         if (!model) {
-            throw new Error(`no model found for element session ${elementSession.session.id} (looking for model with id ${elementSession.modelId})`);
+            throw new Error(`no model found for element session ${elementSession} (looking for model with element ${elementSession.element})`);
         }
-        return outcomeFn(model , elementSession.session, env);
+        return fns.outcome(host, model, elementSession, env);
     }));
 
     const errors = outcomes.filter((s) => s.error).map((s) => s.error);

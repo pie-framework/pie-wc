@@ -1,6 +1,5 @@
 import {html} from 'lit';
 import type {Meta, StoryObj} from '@storybook/web-components';
-import {outcome as outcomeFn} from '@pie-wc/multiple-choice-controller';
 import '@pie-wc/shared';
 import '@pie-wc/multiple-choice-question';
 import item from './data/item-cc036ed6-3022-4496-8fb5-e7e3cdfa2af7.json';
@@ -60,8 +59,7 @@ const StoryWrapper = (args: MultipleChoiceArgs) => {
     const env = {mode: args.mode, role: args.role} as Env;
     return html`
         <pie-container .env=${env}>
-            <pie-item-container .item=${modifiedItem}
-                                .controllerOutcomeFn=${outcomeFn}>
+            <pie-item-container .item=${modifiedItem}>
                 <pie-multiple-choice>
                 </pie-multiple-choice>
                 <br/>

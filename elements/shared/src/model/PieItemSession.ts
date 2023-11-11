@@ -2,18 +2,12 @@ import {PieElementSession} from "./PieElementSession.js";
 import {PieItem} from "./PieItem.js";
 import {createContext} from "@lit/context";
 
-export interface PieElementSessionReference {
-    session: PieElementSession;
-    pie: string;
-    modelId: string;
-}
-
 /**
  * An item session consists of one or more element sessions for the elements and their models in the item.
  */
 export interface PieItemSession {
     id: string;
-    elementSessions: PieElementSessionReference[];
+    elementSessions: PieElementSession[];
 }
 
 export const createItemSession = (item: PieItem, id?: string): PieItemSession => {
@@ -31,15 +25,35 @@ export const createItemSession = (item: PieItem, id?: string): PieItemSession =>
             if (!pie) {
                 throw new Error(`No pie found for element ${element}`);
             }
-            const session = <PieElementSession>{
+            return <PieElementSession>{
                 id: crypto.randomUUID(),
                 element: element,
             };
-            const modelId = model.id;
-            return <PieElementSessionReference>{pie, session, modelId};
         })
     };
 };
 
+/**
+ * Update the element session in the item session.
+ * @param itemSession the item session to update
+ * @param elementSession the element session to update
+ */
+export const mergeElementSession = (itemSession: PieItemSession, elementSession: PieElementSession): PieItemSession => {
+    if (!itemSession) {
+        throw new Error("item session is required");
+    }
+    if (!elementSession) {
+        console.warn("no element session provided");
+        return itemSession;
+    }
+
+    const index = itemSession.elementSessions.findIndex(es => es.element === elementSession.element);
+    if (index === -1) {
+        throw new Error(`no element session found for model with element ${elementSession.element}`);
+    }
+    // merge values (since the update may come from a controller function that doesn't copy all relevant values)
+    itemSession.elementSessions[index] = {...itemSession.elementSessions[index], ...elementSession};
+    return itemSession;
+}
 
 export const pieItemSessionContext = createContext<PieItemSession>("pie-ctx-item-session");

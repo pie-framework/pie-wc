@@ -1,3 +1,5 @@
+import {createContext} from "@lit/context";
+
 /**
  * Base interface for all Pie Elements session data. This always represents the *current* answer/ selection
  * of the user.
@@ -20,8 +22,10 @@ export interface PieElementSession {
     /** The unique id of the element session */
     id: string;
 
-    /** The unique element (DOM) name */
-    element?: string;
+    /** The unique element (DOM) name as it is referenced in the markup of the item */
+    element: string;
 
     [key: string]: unknown; // allow additional properties;
 }
+
+export const pieElementSessionContext = createContext<PieElementSession>("pie-ctx-element-session");
