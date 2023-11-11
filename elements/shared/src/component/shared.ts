@@ -42,17 +42,28 @@ export const replaceCustomElements = (pieMeta: PieElementsMeta, markup: string) 
     }
     let m: string = markup;
     pieMeta.loaded.forEach((meta) => {
-        const find = escapeRegExp(meta.elementMapping.tagName);
-        const replaceWithTagName = meta.elementMapping.pieTagName;
-        // Create a regular expression to find the tag, and include capturing groups for before and after the tag name
-        const re = new RegExp(`(<\/?)${find}(\/?>)`, 'g');
-        // Replace the tag and add the pie-tag-name attribute with the original tag name
-        m = m.replace(re, `$1${replaceWithTagName} pie-tag-name="${find}"$2`);
+        m = replaceTagNameWithAttribute(m, meta.elementMapping.pieTagName, meta.elementMapping.tagName);
     });
-
-    console.debug('changed markup: "%s" (was: "%s")', m, markup);
-
     return m;
+}
+
+/**
+ * In markup, replace instances of searchTag with replaceTag and add attribute 'pie-tag-name' to
+ * the opening replaceTag.
+ * @param markup markup to do replacement in
+ * @param searchTag tag name to search for
+ * @param replaceTag tag name to replace with
+ */
+export const replaceTagNameWithAttribute = (markup: string, searchTag: string, replaceTag: string): string => {
+    const tagRegExp = new RegExp(`</?${searchTag}(\\s+[^>]*)?>`, 'g');
+    return markup.replace(tagRegExp, (match, attributes) => {
+        // Check if it's an opening tag
+        if (match.startsWith('</')) {
+            return `</${replaceTag}>`;
+        } else {
+            return `<${replaceTag}${attributes || ''} pie-tag-name="${searchTag}">`;
+        }
+    });
 }
 
 /**
