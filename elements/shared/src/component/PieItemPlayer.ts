@@ -25,12 +25,7 @@ export class PieItemPlayer extends PieItemContainerBase {
             ${this.loadPieElementsTask.render({
                 initial: () => html`<p>waiting to load PIE elements</p>`,
                 pending: () => html`<p>loading PIE elements...</p>`,
-                complete: (value) => html`
-                    <pie-container .env=${this.env}>
-                        <pie-item-container .item=${this.item}>
-                            ${this.pieElementsFragment}
-                        </pie-item-container>
-                    </pie-container>`,
+                complete: (value) => html`${this.pieElementsFragment}`,
                 error: (error) => html`<p>unable to load PIE elements: ${error}</p>`,
             })}`;
     }
