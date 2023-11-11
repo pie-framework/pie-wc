@@ -9,6 +9,7 @@ server/dist
 public/dist
 .pnp
 .pnp.js
+tsconfig.tsbuildinfo
 
 # Logs
 logs
